@@ -1,0 +1,5 @@
+﻿{
+  "Description": "Microsoft 365 的域所有权验证文件 - 放置在网站根目录中",
+  "Domain": "zhouyuwei.cn",
+  "Id": "999011a2-df44-41c0-ac25-b1c7137cb829"
+}
