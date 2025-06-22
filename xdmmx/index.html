@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>感谢陈晓静老师 - 现代密码学</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: rgba(255, 255, 255, 0.93);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 20px;
+            background: linear-gradient(to right, #3a7bd5, #00d2ff);
+            color: white;
+            border-radius: 12px 12px 0 0;
+            position: relative;
+        }
+        
+        h1 {
+            font-size: 36px;
+            margin-bottom: 10px;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 20px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+        
+        .logo {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+        }
+        
+        .role-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .role-btn {
+            padding: 14px 30px;
+            font-size: 18px;
+            font-weight: 500;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            color: white;
+            min-width: 200px;
+        }
+        
+        .student-btn {
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+        }
+        
+        .teacher-btn {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+        }
+        
+        .role-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        
+        .role-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .section {
+            padding: 30px;
+            display: none;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #3498db;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+        }
+        
+        textarea, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border 0.3s;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+        
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+        
+        textarea:focus, input:focus {
+            outline: none;
+            border-color: #3498db;
+            box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            font-size: 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .btn i {
+            margin-right: 8px;
+        }
+        
+        .encrypt-btn {
+            background: linear-gradient(to right, #ff9966, #ff5e62);
+            color: white;
+        }
+        
+        .decrypt-btn {
+            background: linear-gradient(to right, #11998e, #38ef7d);
+            color: white;
+        }
+        
+        .hint-btn {
+            background: #3498db;
+            color: white;
+            margin-left: 10px;
+        }
+        
+        .messages-container {
+            margin-top: 30px;
+            border: 2px solid #f1f1f1;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .messages-header {
+            padding: 12px 15px;
+            background: #f8f9fa;
+            font-weight: 600;
+            border-bottom: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .message-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .message-item {
+            padding: 15px;
+            border-bottom: 1px solid #e9ecef;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+        
+        .message-item:last-child {
+            border-bottom: none;
+        }
+        
+        .message-item:hover {
+            background: #f8f9fa;
+        }
+        
+        .message-item.decrypted {
+            background: #e6f7ff;
+        }
+        
+        .message-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #6c757d;
+        }
+        
+        .encrypted-text {
+            font-family: monospace;
+            word-break: break-word;
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 5px 0;
+            color: #dc3545;
+        }
+        
+        .decrypted-text {
+            margin-top: 10px;
+            padding: 15px;
+            background: #e6f7ff;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+            font-size: 17px;
+            line-height: 1.6;
+        }
+        
+        .footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+            font-size: 15px;
+            color: #6c757d;
+        }
+        
+        .key-info {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .key-card {
+            padding: 12px;
+            border-radius: 8px;
+            flex: 1;
+        }
+        
+        .public-key {
+            border-left: 4px solid #ff7e5f;
+            background: #fff0e6;
+        }
+        
+        .private-key {
+            border-left: 4px solid #38ef7d;
+            background: #e6fff2;
+        }
+        
+        .key-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        
+        .key-value {
+            font-family: monospace;
+            word-break: break-word;
+            color: #495057;
+        }
+        
+        .hint-box {
+            background: #fff8e6;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 15px;
+            display: none;
+        }
+        
+        .hint-box.show {
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .role-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .key-info {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 30px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .hint-btn {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">🔒</div>
+            <h1>感谢陈晓静老师</h1>
+            <div class="subtitle">现代密码学 - 2024-2025学年</div>
+            
+            <div class="role-buttons">
+                <button id="studentBtn" class="role-btn student-btn">我是学生</button>
+                <button id="teacherBtn" class="role-btn teacher-btn">我是陈老师</button>
+            </div>
+        </header>
+        
+        <main>
+            <!-- 密钥信息 -->
+            <div id="keyInfo" class="key-info">
+                <div class="key-card public-key">
+                    <div class="key-title">公钥</div>
+                    <div class="key-value">e = 3<br>n = 93,669(xdmmx)</div>
+                </div>
+                <div class="key-card private-key">
+                    <div class="key-title">私钥（d）</div>
+                    <div class="key-value">由陈老师安全保管</div>
+                </div>
+            </div>
+            
+            <!-- 私钥提示框 -->
+            <div id="hintBox" class="hint-box">
+                <strong>私钥提示：</strong>
+                <p>您的私钥是5位数字，请回忆以下线索：</p>
+                <p>1. 私钥计算公式：d = e⁻¹ mod φ(n)</p>
+                <p>2. φ(n) = (p-1)(q-1) = (*-1)(*****-1) = *****</p>
+                <p>3. 3 × d ≡ 1 mod *****</p>
+                <p>4. 私钥值在20000-30000之间</p>
+                <p>5. 私钥的最后一位是5</p>
+            </div>
+            
+            <!-- 学生区域 -->
+            <section id="studentSection" class="section">
+                <h2 class="section-title">学生 - 发送加密感谢</h2>
+                
+                <div class="form-group">
+                    <label for="studentId">学号 (可选)</label>
+                    <input type="text" id="studentId" placeholder="输入您的学号（非必须）">
+                </div>
+                
+                <div class="form-group">
+                    <label for="studentMessage">感谢留言</label>
+                    <textarea id="studentMessage" placeholder="输入您想对陈老师说的感谢话语（支持中文）"></textarea>
+                </div>
+                
+                <button id="encryptBtn" class="btn encrypt-btn">加密并发送</button>
+                
+                <div id="encryptedResult" class="decrypted-text" style="display:none; margin-top:20px">
+                    <!-- 加密结果会显示在这里 -->
+                </div>
+            </section>
+            
+            <!-- 老师区域 -->
+            <section id="teacherSection" class="section">
+                <h2 class="section-title">陈老师 - 解密查看消息</h2>
+                
+                <div class="form-group">
+                    <label for="privateKey">请输入您的私钥（d）</label>
+                    <input type="password" id="privateKey" placeholder="请安全输入您的私钥" autocomplete="off">
+                    <button id="hintBtn" class="btn hint-btn" style="margin-top:10px">显示私钥提示</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="cipherInput">或输入密文解密</label>
+                    <textarea id="cipherInput" placeholder="请在此输入加密文本（空格分隔的数字串）"></textarea>
+                </div>
+                
+                <button id="decryptBtn" class="btn decrypt-btn">解密查看消息</button>
+                
+                <div id="decryptedResult" class="decrypted-text" style="display:none; margin-top:20px">
+                    <!-- 解密结果会显示在这里 -->
+                </div>
+                
+                <!-- 消息列表 -->
+                <div class="messages-container">
+                    <div class="messages-header">
+                        <span>已收到的加密消息</span>
+                        <button id="decryptAllBtn" class="btn hint-btn" disabled>解密全部</button>
+                    </div>
+                    <div id="messageList" class="message-list">
+                        <!-- 消息列表动态填充 -->
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <div class="footer">
+            <p>现代密码学 | 此页面使用RSA加密算法</p>
+            <p>公钥: e=3, n=93669(xdmmx) | 制作于2025年陈晓静老师主讲的《现代密码学》2班结课后</p>
+        </div>
+    </div>
+
+    <script>
+        // DOM元素
+        const studentBtn = document.getElementById('studentBtn');
+        const teacherBtn = document.getElementById('teacherBtn');
+        const studentSection = document.getElementById('studentSection');
+        const teacherSection = document.getElementById('teacherSection');
+        const encryptBtn = document.getElementById('encryptBtn');
+        const decryptBtn = document.getElementById('decryptBtn');
+        const studentMessage = document.getElementById('studentMessage');
+        const cipherInput = document.getElementById('cipherInput');
+        const encryptedResult = document.getElementById('encryptedResult');
+        const decryptedResult = document.getElementById('decryptedResult');
+        const messageList = document.getElementById('messageList');
+        const privateKeyInput = document.getElementById('privateKey');
+        const hintBox = document.getElementById('hintBox');
+        const hintBtn = document.getElementById('hintBtn');
+        const decryptAllBtn = document.getElementById('decryptAllBtn');
+        
+        // 密钥参数
+        const n = 93669;   // 公钥模数 n = p * q = 3 * 31223
+        const e = 3;       // 公钥指数
+        const d = 20815;   // 私钥指数 d = e^-1 mod (p-1)(q-1)
+        
+        // 学生和老师区域的切换
+        studentBtn.addEventListener('click', () => {
+            studentSection.style.display = 'block';
+            teacherSection.style.display = 'none';
+        });
+        
+        teacherBtn.addEventListener('click', () => {
+            teacherSection.style.display = 'block';
+            studentSection.style.display = 'none';
+            // 加载已有的加密消息
+            loadMessages();
+        });
+        
+        // 显示私钥提示
+        hintBtn.addEventListener('click', () => {
+            hintBox.classList.toggle('show');
+            hintBtn.textContent = hintBox.classList.contains('show') ? '隐藏提示' : '显示私钥提示';
+        });
+        
+        // RSA加密函数
+        function rsaEncrypt(message) {
+            const encrypted = [];
+            for (let i = 0; i < message.length; i++) {
+                const charCode = message.charCodeAt(i);
+                // 使用模幂运算加密每个字符
+                let c = 1;
+                for (let j = 0; j < e; j++) {
+                    c = (c * charCode) % n;
+                }
+                encrypted.push(c);
+            }
+            return encrypted.join(' ');
+        }
+        
+        // RSA解密函数
+        function rsaDecrypt(cipherText, privateKey) {
+            if (!cipherText.trim()) return "";
+            
+            const cipherArray = cipherText.split(' ').map(num => parseInt(num));
+            let decrypted = "";
+            
+            for (let i = 0; i < cipherArray.length; i++) {
+                // 快速模幂运算
+                let c = cipherArray[i];
+                let m = 1;
+                let exponent = privateKey;
+                let base = c;
+                
+                while (exponent > 0) {
+                    if (exponent % 2 === 1) {
+                        m = (m * base) % n;
+                    }
+                    base = (base * base) % n;
+                    exponent = Math.floor(exponent / 2);
+                }
+                
+                decrypted += String.fromCharCode(m);
+            }
+            
+            return decrypted;
+        }
+        
+        // 验证私钥是否正确
+        function validatePrivateKey(privateKey) {
+            // 测试加密解密一个字符
+            const testChar = 'A';
+            const encrypted = rsaEncrypt(testChar);
+            const decrypted = rsaDecrypt(encrypted, privateKey);
+            
+            return decrypted === testChar;
+        }
+        
+        // 保存消息到本地存储
+        function saveMessage(id, message, encryptedText) {
+            const timestamp = new Date().toLocaleString();
+            const messages = JSON.parse(localStorage.getItem('cryptoMessages') || '[]');
+            
+            messages.unshift({
+                id,
+                message,
+                encryptedText,
+                timestamp
+            });
+            
+            localStorage.setItem('cryptoMessages', JSON.stringify(messages));
+            return messages;
+        }
+        
+        // 从本地存储加载消息
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('cryptoMessages') || '[]');
+            messageList.innerHTML = '';
+            
+            if (messages.length === 0) {
+                messageList.innerHTML = '<div class="message-item" style="text-align:center; color:#6c757d;">还没有收到任何消息</div>';
+                return;
+            }
+            
+            messages.forEach(msg => {
+                const messageItem = document.createElement('div');
+                messageItem.className = 'message-item';
+                messageItem.dataset.encrypted = msg.encryptedText;
+                
+                messageItem.innerHTML = `
+                    <div class="message-info">
+                        <span>${msg.id ? `学号: ${msg.id}` : '匿名学生'}</span>
+                        <span>${msg.timestamp}</span>
+                    </div>
+                    <div class="encrypted-text">${msg.encryptedText}</div>
+                    <div class="decrypted-text" style="display:none;"></div>
+                `;
+                
+                messageItem.addEventListener('click', function() {
+                    const privateKey = parseInt(privateKeyInput.value);
+                    
+                    if (!privateKey) {
+                        alert('请输入私钥后再尝试解密');
+                        return;
+                    }
+                    
+                    if (!validatePrivateKey(privateKey)) {
+                        alert('私钥不正确，请重新输入');
+                        return;
+                    }
+                    
+                    const decrypted = rsaDecrypt(msg.encryptedText, privateKey);
+                    const decryptedElement = this.querySelector('.decrypted-text');
+                    
+                    decryptedElement.textContent = decrypted;
+                    decryptedElement.style.display = 'block';
+                    this.classList.add('decrypted');
+                });
+                
+                messageList.appendChild(messageItem);
+            });
+        }
+        
+        // 解密全部消息
+        decryptAllBtn.addEventListener('click', function() {
+            const privateKey = parseInt(privateKeyInput.value);
+            
+            if (!privateKey) {
+                alert('请输入私钥后再尝试解密');
+                return;
+            }
+            
+            if (!validatePrivateKey(privateKey)) {
+                alert('私钥不正确，请重新输入');
+                return;
+            }
+            
+            const messageItems = document.querySelectorAll('.message-item');
+            messageItems.forEach(item => {
+                const encryptedText = item.dataset.encrypted;
+                if (encryptedText) {
+                    const decrypted = rsaDecrypt(encryptedText, privateKey);
+                    const decryptedElement = item.querySelector('.decrypted-text');
+                    
+                    decryptedElement.textContent = decrypted;
+                    decryptedElement.style.display = 'block';
+                    item.classList.add('decrypted');
+                }
+            });
+            
+            this.disabled = true;
+            this.textContent = '已全部解密';
+        });
+        
+        // 监听私钥输入变化
+        privateKeyInput.addEventListener('input', function() {
+            const key = this.value.trim();
+            decryptAllBtn.disabled = !key;
+        });
+        
+        // 加密按钮点击事件
+        encryptBtn.addEventListener('click', () => {
+            const message = studentMessage.value.trim();
+            
+            if (!message) {
+                alert('请输入感谢消息');
+                return;
+            }
+            
+            // 加密消息
+            const encrypted = rsaEncrypt(message);
+            
+            // 显示加密结果
+            encryptedResult.innerHTML = `
+                <strong>加密成功！</strong><br><br>
+                <strong>加密结果：</strong>
+                <div class="encrypted-text">${encrypted}</div><br>
+                这条消息已安全发送给陈老师
+            `;
+            encryptedResult.style.display = 'block';
+            
+            // 保存到本地存储
+            const studentId = document.getElementById('studentId').value.trim() || '匿名学生';
+            saveMessage(studentId, message, encrypted);
+            
+            // 清空输入框
+            studentMessage.value = '';
+            document.getElementById('studentId').value = '';
+        });
+        
+        // 解密按钮点击事件
+        decryptBtn.addEventListener('click', () => {
+            let cipherText = cipherInput.value.trim();
+            const privateKey = parseInt(privateKeyInput.value);
+            
+            if (!privateKey) {
+                alert('请输入私钥后再尝试解密');
+                return;
+            }
+            
+            if (!validatePrivateKey(privateKey)) {
+                alert('私钥不正确，请重新输入');
+                return;
+            }
+            
+            // 如果没有输入密文，尝试使用本地存储中的第一条消息
+            if (!cipherText) {
+                const messages = JSON.parse(localStorage.getItem('cryptoMessages') || '[]');
+                if (messages.length > 0) {
+                    cipherText = messages[0].encryptedText;
+                    cipherInput.value = cipherText;
+                } else {
+                    alert('没有加密消息可解密');
+                    return;
+                }
+            }
+            
+            // 使用输入的私钥
+            const decryptedMsg = rsaDecrypt(cipherText, privateKey);
+            
+            decryptedResult.innerHTML = `
+                <strong>解密结果：</strong><br><br>
+                <div>${decryptedMsg}</div>
+            `;
+            decryptedResult.style.display = 'block';
+        });
+        
+        // 初始化
+        teacherSection.style.display = 'none';
+        
+        // 设置示例消息
+        document.addEventListener('DOMContentLoaded', () => {
+            const messages = JSON.parse(localStorage.getItem('cryptoMessages') || '[]');
+            if (messages.length === 0) {
+                // 添加示例消息
+                saveMessage('Y22314085', '陈老师，感谢您这学期的辛苦教学！您的课程生动有趣，让我受益匪浅。', rsaEncrypt('陈老师，感谢您这学期的辛苦教学！您的课程生动有趣，让我受益匪浅。'));
+                saveMessage('Y22314085', '您的讲解非常清晰，尤其是RSA算法部分，我现在理解得很透彻！', rsaEncrypt('您的讲解非常清晰，尤其是RSA算法部分，我现在理解得很透彻！'));
+                saveMessage('', '期待之后学期的《数值分析》课程！', rsaEncrypt('期待之后学期的《数值分析》课程！'));
+            }
+        });
+    </script>
+</body>
+</html>
