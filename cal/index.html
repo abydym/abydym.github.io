@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>全能计算器&转换器(开发中)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Noto Sans SC', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 12px;
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: var(--dark);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: #555;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .app-container {
+            display: flex;
+            gap: 25px;
+            margin-top: 20px;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 20px;
+            height: fit-content;
+        }
+
+        .sidebar h3 {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary);
+            color: var(--secondary);
+        }
+
+        .nav-item {
+            padding: 12px 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background-color: #f0f4ff;
+        }
+
+        .nav-item.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        .calculator-card {
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 25px;
+            transition: var(--transition);
+        }
+
+        .calculator-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            color: var(--secondary);
+        }
+
+        .card-header i {
+            font-size: 1.8rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .card-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+        }
+
+        .btn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 500;
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+            transform: translateY(-2px);
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9ff;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 500;
+            min-height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 8px 15px;
+            background-color: #f0f4ff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .tab.active {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .converter-row {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .converter-row input {
+            flex: 1;
+        }
+
+        .converter-row select {
+            width: 120px;
+        }
+
+        .equal {
+            font-size: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+            }
+            
+            header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-calculator"></i> 全Bug计算器(开发中)</h1>
+            <p>一个集单位换算、贷款计算、投资计算、日期计算和亲戚称呼计算于一体的多功能但未必算得正确的工具</p>
+        </header>
+
+        <div class="app-container">
+            <div class="sidebar">
+                <h3>功能菜单</h3>
+                <div class="nav-item active" data-target="unit-converter">
+                    <i class="fas fa-exchange-alt"></i> 单位换算器
+                </div>
+                <div class="nav-item" data-target="loan-calculator">
+                    <i class="fas fa-home"></i> 贷款计算器
+                </div>
+                <div class="nav-item" data-target="investment-calculator">
+                    <i class="fas fa-chart-line"></i> 投资计算器
+                </div>
+                <div class="nav-item" data-target="date-calculator">
+                    <i class="far fa-calendar-alt"></i> 日期计算器
+                </div>
+                <div class="nav-item" data-target="relationship-calculator">
+                    <i class="fas fa-users"></i> 亲戚称呼计算器
+                </div>
+                <!-- <div class="nav-item" data-target="add-new">
+                    <i class="fas fa-plus-circle"></i> 添加新功能
+                </div> -->
+            </div>
+
+            <div class="content">
+                <!-- 单位换算器 -->
+                <div class="calculator-card" id="unit-converter">
+                    <div class="card-header">
+                        <i class="fas fa-exchange-alt"></i>
+                        <h2>单位换算器</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-tab="length">长度</div>
+                        <div class="tab" data-tab="weight">重量</div>
+                        <div class="tab" data-tab="volume">体积</div>
+                        <div class="tab" data-tab="temperature">温度</div>
+                        <div class="tab" data-tab="currency">货币</div>
+                    </div>
+                    
+                    <!-- 长度换算 -->
+                    <div class="tab-content active" id="length-content">
+                        <div class="converter-row">
+                            <input type="number" id="length-input" placeholder="输入数值" value="1">
+                            <select id="length-from">
+                                <option value="mm">毫米 (mm)</option>
+                                <option value="cm">厘米 (cm)</option>
+                                <option value="m" selected>米 (m)</option>
+                                <option value="km">千米 (km)</option>
+                                <option value="in">英寸 (in)</option>
+                                <option value="ft">英尺 (ft)</option>
+                                <option value="yd">码 (yd)</option>
+                                <option value="mi">英里 (mi)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="equal">=</div>
+                        
+                        <div class="converter-row">
+                            <input type="number" id="length-output" placeholder="结果" readonly>
+                            <select id="length-to">
+                                <option value="mm">毫米 (mm)</option>
+                                <option value="cm">厘米 (cm)</option>
+                                <option value="m">米 (m)</option>
+                                <option value="km" selected>千米 (km)</option>
+                                <option value="in">英寸 (in)</option>
+                                <option value="ft">英尺 (ft)</option>
+                                <option value="yd">码 (yd)</option>
+                                <option value="mi">英里 (mi)</option>
+                            </select>
+                        </div>
+                        
+                        <button class="btn" id="calculate-length">计算</button>
+                    </div>
+                    
+                    <!-- 货币换算 -->
+                    <div class="tab-content" id="currency-content">
+                        <div class="form-group">
+                            <label>金额</label>
+                            <input type="number" id="currency-amount" placeholder="输入金额" value="1">
+                        </div>
+                        
+                        <div class="converter-row">
+                            <select id="currency-from">
+                                <option value="USD">美元 (USD)</option>
+                                <option value="CNY" selected>人民币 (CNY)</option>
+                                <option value="EUR">欧元 (EUR)</option>
+                                <option value="GBP">英镑 (GBP)</option>
+                                <option value="JPY">日元 (JPY)</option>
+                            </select>
+                            
+                            <i class="fas fa-arrow-right"></i>
+                            
+                            <select id="currency-to">
+                                <option value="USD" selected>美元 (USD)</option>
+                                <option value="CNY">人民币 (CNY)</option>
+                                <option value="EUR">欧元 (EUR)</option>
+                                <option value="GBP">英镑 (GBP)</option>
+                                <option value="JPY">日元 (JPY)</option>
+                            </select>
+                        </div>
+                        
+                        <div class="result" id="currency-result">
+                            实时汇率加载中...
+                        </div>
+                        
+                        <button class="btn" id="convert-currency">转换货币</button>
+                        <p style="text-align: center; margin-top: 10px; font-size: 0.8rem; color: #666;">
+                            汇率更新时间: <span id="update-time">--</span>
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- 贷款计算器 -->
+                <div class="calculator-card" id="loan-calculator">
+                    <div class="card-header">
+                        <i class="fas fa-home"></i>
+                        <h2>贷款计算器</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-loan="mortgage">房贷</div>
+                        <div class="tab" data-loan="car">车贷</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>贷款金额 (¥)</label>
+                        <input type="number" id="loan-amount" placeholder="例如: 500000" value="500000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>贷款期限 (年)</label>
+                        <input type="number" id="loan-term" placeholder="例如: 20" value="20">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年利率 (%)</label>
+                        <input type="number" id="interest-rate" placeholder="例如: 4.5" value="4.5" step="0.01">
+                    </div>
+                    
+                    <div class="result" id="loan-result">
+                        输入信息后查看计算结果
+                    </div>
+                    
+                    <button class="btn" id="calculate-loan">计算月供</button>
+                </div>
+                
+                <!-- 投资计算器 -->
+                <div class="calculator-card" id="investment-calculator">
+                    <div class="card-header">
+                        <i class="fas fa-chart-line"></i>
+                        <h2>投资计算器</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-invest="compound">复利计算</div>
+                        <div class="tab" data-invest="roi">年化收益率</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>初始投资 (¥)</label>
+                        <input type="number" id="principal" placeholder="例如: 10000" value="10000">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>年利率 (%)</label>
+                        <input type="number" id="investment-rate" placeholder="例如: 5" value="5" step="0.1">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>投资年限</label>
+                        <input type="number" id="investment-years" placeholder="例如: 10" value="10">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>每年追加投资 (¥)</label>
+                        <input type="number" id="additional" placeholder="例如: 1000" value="1000">
+                    </div>
+                    
+                    <div class="result" id="investment-result">
+                        输入信息后查看计算结果
+                    </div>
+                    
+                    <button class="btn" id="calculate-investment">计算收益</button>
+                </div>
+                
+                <!-- 日期计算器 -->
+                <div class="calculator-card" id="date-calculator">
+                    <div class="card-header">
+                        <i class="far fa-calendar-alt"></i>
+                        <h2>日期计算器</h2>
+                    </div>
+                    
+                    <div class="tabs">
+                        <div class="tab active" data-date="days">天数计算</div>
+                        <div class="tab" data-date="workdays">工作日计算</div>
+                        <div class="tab" data-date="difference">时间差</div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>开始日期</label>
+                        <input type="date" id="start-date" value="2023-01-01">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>结束日期</label>
+                        <input type="date" id="end-date" value="2023-12-31">
+                    </div>
+                    
+                    <div class="result" id="date-result">
+                        选择日期后查看计算结果
+                    </div>
+                    
+                    <button class="btn" id="calculate-date">计算</button>
+                </div>
+                
+                <!-- 亲戚称呼计算器 -->
+                <div class="calculator-card" id="relationship-calculator">
+                    <div class="card-header">
+                        <i class="fas fa-users"></i>
+                        <h2>亲戚称呼计算器</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>你的性别</label>
+                        <select id="my-gender">
+                            <option value="male">男性</option>
+                            <option value="female">女性</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>亲戚性别</label>
+                        <select id="relative-gender">
+                            <option value="male">男性</option>
+                            <option value="female">女性</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>关系路径</label>
+                        <input type="text" id="relationship-path" placeholder="例如: 父亲的母亲">
+                    </div>
+                    
+                    <div class="result" id="relationship-result">
+                        输入关系后查看称呼
+                    </div>
+                    
+                    <button class="btn" id="calculate-relationship">计算称呼</button>
+                    
+                    <div style="margin-top: 20px; font-size: 0.9rem; color: #666;">
+                        <p><strong>示例：</strong></p>
+                        <ul style="padding-left: 20px; margin-top: 10px;">
+                            <li>父亲的父亲 → 爷爷</li>
+                            <li>母亲的兄弟 → 舅舅</li>
+                            <li>父亲的姐姐 → 姑姑</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <!-- 添加新功能 -->
+                <div class="calculator-card hidden" id="add-new">
+                    <div class="card-header">
+                        <i class="fas fa-plus-circle"></i>
+                        <h2>添加新功能</h2>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>功能名称</label>
+                        <input type="text" placeholder="例如: BMI计算器">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>功能描述</label>
+                        <textarea rows="3" placeholder="请描述您想要添加的功能..." style="width: 100%; padding: 12px 15px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>所需输入参数</label>
+                        <input type="text" placeholder="例如: 身高(cm), 体重(kg)">
+                    </div>
+                    
+                    <div class="result" style="margin-top: 20px; background-color: #e8f4ff; color: #0a58ca;">
+                        <p><strong>如何添加新功能：</strong></p>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">
+                            1. 在左侧菜单中添加新项<br>
+                            2. 在HTML中创建新的计算器卡片<br>
+                            3. 实现相应的JavaScript逻辑<br>
+                            4. 在CSS中添加必要的样式
+                        </p>
+                    </div>
+                    
+                    <button class="btn" style="margin-top: 20px;">提交功能请求</button>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 全能计算器与转换器 | abydym</p>
+        </footer>
+    </div>
+
+    <script>
+        // 导航切换
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // 更新活动菜单项
+                document.querySelectorAll('.nav-item').forEach(i => {
+                    i.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // 隐藏所有卡片
+                document.querySelectorAll('.calculator-card').forEach(card => {
+                    card.classList.add('hidden');
+                });
+                
+                // 显示目标卡片
+                const targetId = this.getAttribute('data-target');
+                document.getElementById(targetId).classList.remove('hidden');
+            });
+        });
+        
+        // 单位换算器标签切换
+        document.querySelectorAll('.tabs .tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const parent = this.closest('.calculator-card');
+                const tabType = this.getAttribute('data-tab');
+                
+                // 更新活动标签
+                parent.querySelectorAll('.tab').forEach(t => {
+                    t.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // 隐藏所有内容
+                parent.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                
+                // 显示目标内容
+                document.getElementById(`${tabType}-content`).classList.add('active');
+            });
+        });
+        
+        // 长度换算功能
+        document.getElementById('calculate-length').addEventListener('click', function() {
+            const input = parseFloat(document.getElementById('length-input').value) || 0;
+            const from = document.getElementById('length-from').value;
+            const to = document.getElementById('length-to').value;
+            
+            // 转换因子（以米为基准）
+            const factors = {
+                mm: 0.001,
+                cm: 0.01,
+                m: 1,
+                km: 1000,
+                in: 0.0254,
+                ft: 0.3048,
+                yd: 0.9144,
+                mi: 1609.34
+            };
+            
+            // 转换计算
+            const meters = input * factors[from];
+            const result = meters / factors[to];
+            
+            document.getElementById('length-output').value = result.toFixed(6);
+        });
+        
+        // 货币转换功能
+        document.getElementById('convert-currency').addEventListener('click', function() {
+            const amount = parseFloat(document.getElementById('currency-amount').value) || 1;
+            const from = document.getElementById('currency-from').value;
+            const to = document.getElementById('currency-to').value;
+            
+            // 实际应用中这里会调用外部API
+            // 以下是模拟汇率
+            const exchangeRates = {
+                USD: { CNY: 6.92, EUR: 0.94, GBP: 0.82, JPY: 134.34, USD: 1 },
+                CNY: { USD: 0.14, EUR: 0.14, GBP: 0.12, JPY: 19.41, CNY: 1 },
+                EUR: { USD: 1.07, CNY: 7.37, GBP: 0.88, JPY: 143.32, EUR: 1 },
+                GBP: { USD: 1.22, CNY: 8.45, EUR: 1.14, JPY: 163.45, GBP: 1 },
+                JPY: { USD: 0.0074, CNY: 0.052, EUR: 0.007, GBP: 0.0061, JPY: 1 }
+            };
+            
+            const rate = exchangeRates[from][to];
+            const result = amount * rate;
+            
+            document.getElementById('currency-result').textContent = 
+                `${amount} ${from} = ${result.toFixed(2)} ${to}`;
+                
+            // 更新时间
+            const now = new Date();
+            document.getElementById('update-time').textContent = 
+                `${now.getHours()}:${now.getMinutes().toString().padStart(2, '0')}:${now.getSeconds().toString().padStart(2, '0')}`;
+        });
+        
+        // 贷款计算器
+        document.getElementById('calculate-loan').addEventListener('click', function() {
+            const amount = parseFloat(document.getElementById('loan-amount').value) || 0;
+            const term = parseFloat(document.getElementById('loan-term').value) || 0;
+            const rate = parseFloat(document.getElementById('interest-rate').value) || 0;
+            
+            if (amount <= 0 || term <= 0 || rate <= 0) {
+                document.getElementById('loan-result').textContent = "请输入有效的贷款信息";
+                return;
+            }
+            
+            // 计算月供
+            const monthlyRate = rate / 100 / 12;
+            const payments = term * 12;
+            const x = Math.pow(1 + monthlyRate, payments);
+            const monthly = (amount * x * monthlyRate) / (x - 1);
+            
+            document.getElementById('loan-result').innerHTML = `
+                <div>月供: <strong>¥${monthly.toFixed(2)}</strong></div>
+                <div style="margin-top: 8px; font-size: 0.9rem;">总还款额: ¥${(monthly * payments).toFixed(2)}</div>
+                <div style="font-size: 0.9rem;">总利息: ¥${(monthly * payments - amount).toFixed(2)}</div>
+            `;
+        });
+        
+        // 投资计算器
+        document.getElementById('calculate-investment').addEventListener('click', function() {
+            const principal = parseFloat(document.getElementById('principal').value) || 0;
+            const rate = parseFloat(document.getElementById('investment-rate').value) || 0;
+            const years = parseFloat(document.getElementById('investment-years').value) || 0;
+            const additional = parseFloat(document.getElementById('additional').value) || 0;
+            
+            if (principal <= 0 || rate <= 0 || years <= 0) {
+                document.getElementById('investment-result').textContent = "请输入有效的投资信息";
+                return;
+            }
+            
+            // 复利计算
+            let total = principal;
+            const monthlyRate = rate / 100 / 12;
+            const months = years * 12;
+            
+            for (let i = 0; i < months; i++) {
+                total = total * (1 + monthlyRate) + additional / 12;
+            }
+            
+            const totalInvested = principal + additional * years;
+            const earnings = total - totalInvested;
+            
+            document.getElementById('investment-result').innerHTML = `
+                <div>最终金额: <strong>¥${total.toFixed(2)}</strong></div>
+                <div style="margin-top: 8px; font-size: 0.9rem;">总投入: ¥${totalInvested.toFixed(2)}</div>
+                <div style="font-size: 0.9rem;">收益: ¥${earnings.toFixed(2)}</div>
+            `;
+        });
+        
+        // 日期计算器
+        document.getElementById('calculate-date').addEventListener('click', function() {
+            const startDate = new Date(document.getElementById('start-date').value);
+            const endDate = new Date(document.getElementById('end-date').value);
+            
+            if (startDate >= endDate) {
+                document.getElementById('date-result').textContent = "结束日期必须晚于开始日期";
+                return;
+            }
+            
+            // 计算天数差
+            const timeDiff = endDate - startDate;
+            const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+            
+            // 计算工作日（简单模拟）
+            let workdays = 0;
+            let currentDate = new Date(startDate);
+            
+            while (currentDate <= endDate) {
+                const day = currentDate.getDay();
+                if (day !== 0 && day !== 6) {
+                    workdays++;
+                }
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            
+            document.getElementById('date-result').innerHTML = `
+                <div>总天数: <strong>${days}</strong></div>
+                <div style="margin-top: 8px;">工作日: ${workdays}</div>
+                <div style="margin-top: 8px;">周末/假日: ${days - workdays}</div>
+            `;
+        });
+        
+        // 亲戚称呼计算器
+        document.getElementById('calculate-relationship').addEventListener('click', function() {
+            const path = document.getElementById('relationship-path').value.toLowerCase();
+            
+            if (!path) {
+                document.getElementById('relationship-result').textContent = "请输入关系路径";
+                return;
+            }
+            
+            // 简单的称呼映射
+            const relationships = {
+                "父亲的父亲": "爷爷",
+                "父亲的母亲": "奶奶",
+                "母亲的父亲": "外公",
+                "母亲的母亲": "外婆",
+                "父亲的哥哥": "伯父",
+                "父亲的弟弟": "叔叔",
+                "父亲的姐姐": "姑姑",
+                "父亲的妹妹": "姑姑",
+                "母亲的兄弟": "舅舅",
+                "母亲的姐姐": "姨妈",
+                "母亲的妹妹": "姨妈",
+                "儿子的儿子": "孙子",
+                "儿子的女儿": "孙女",
+                "儿子的丈夫": "儿婿",
+                "女儿的儿子": "外孙",
+                "女儿的女儿": "外孙女",
+                "女儿的妻子": "女媳",
+            };
+            
+            const result = relationships[path] || "未知关系";
+            document.getElementById('relationship-result').innerHTML = `
+                <strong>${result}</strong>
+            `;
+        });
+        
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            // 初始化货币转换结果
+            document.getElementById('convert-currency').click();
+            
+            // 初始化日期为今天和一年后
+            const today = new Date();
+            const nextYear = new Date();
+            nextYear.setFullYear(today.getFullYear() + 1);
+            
+            document.getElementById('start-date').valueAsDate = today;
+            document.getElementById('end-date').valueAsDate = nextYear;
+        });
+    </script>
+</body>
+</html>
