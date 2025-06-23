@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>游戏中心大厅</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            animation: fadeIn 1s ease-out;
+        }
+        
+        h1 {
+            font-size: 3.5rem;
+            background: linear-gradient(to right, #4cc9f0, #4361ee, #f72585);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.8;
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        
+        .games-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        
+        .game-card {
+            background: rgba(30, 30, 46, 0.7);
+            border-radius: 15px;
+            overflow: hidden;
+            width: 320px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            position: relative;
+            backdrop-filter: blur(10px);
+            animation: scaleIn 0.5s ease-out forwards;
+            opacity: 0;
+        }
+        
+        .game-card:nth-child(1) { animation-delay: 0.2s; }
+        .game-card:nth-child(2) { animation-delay: 0.4s; }
+        .game-card:nth-child(3) { animation-delay: 0.6s; }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.5);
+            border-color: rgba(112, 161, 255, 0.4);
+        }
+        
+        .game-card:active {
+            transform: translateY(-5px);
+        }
+        
+        .game-thumbnail {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+        
+        .game-thumbnail::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(transparent 60%, rgba(0,0,0,0.7));
+        }
+        
+        .game-title {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .game-info {
+            padding: 25px;
+        }
+        
+        .game-description {
+            color: #a9b7c6;
+            margin: 15px 0;
+            line-height: 1.6;
+            height: 60px;
+            overflow: hidden;
+        }
+        
+        .game-meta {
+            display: flex;
+            justify-content: space-between;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 15px;
+            color: #8a9ba8;
+            font-size: 0.9rem;
+        }
+        
+        .play-btn {
+            display: block;
+            background: linear-gradient(to right, #4361ee, #3a0ca3);
+            color: white;
+            text-align: center;
+            padding: 12px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .play-btn:hover {
+            background: linear-gradient(to right, #4895ef, #4361ee);
+            transform: scale(1.05);
+        }
+        
+        .play-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -60px;
+            width: 30px;
+            height: 200%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(25deg);
+            transition: all 0.6s;
+            z-index: -1;
+        }
+        
+        .play-btn:hover::after {
+            left: 110%;
+        }
+        
+        .coming-soon {
+            position: absolute;
+            top: 10px;
+            right: -30px;
+            background: #f72585;
+            color: white;
+            padding: 5px 30px;
+            font-size: 0.8rem;
+            transform: rotate(45deg);
+            font-weight: bold;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .game-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .icon {
+            background: rgba(255, 255, 255, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes scaleIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 0;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            margin-top: 40px;
+        }
+        
+        .extensible-note {
+            background: rgba(76, 201, 240, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid rgba(76, 201, 240, 0.3);
+            display: none; /* Hidden by default for non-developers */
+        }
+        
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .games-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>游戏中心</h1>
+        <p class="subtitle">探索精彩游戏世界，挑战你的技巧和智慧！无论你是休闲玩家还是硬核玩家，这里都有适合你的游戏体验。</p>
+    </header>
+    
+    <div class="games-container">
+        <!-- 推箱子游戏卡片 -->
+        <div class="game-card">
+            <div class="game-thumbnail" style="background: linear-gradient(45deg, #ff9a9e, #fad0c4);">
+                <div class="game-title">推箱子</div>
+            </div>
+            <div class="game-info">
+                <p class="game-description">经典推箱子益智游戏，挑战你的逻辑思维。移动箱子到目标位置，用最少的步数完成关卡！</p>
+                <a href="tuixiangzi.html" class="play-btn">开始游戏</a>
+                
+                <div class="game-meta">
+                    <span>策略 · 益智</span>
+                    <span><i class="fas fa-user"></i> 单人游戏</span>
+                </div>
+                
+                <div class="game-icons">
+                    <div class="icon"><i class="fas fa-puzzle-piece"></i></div>
+                    <div class="icon"><i class="fas fa-brain"></i></div>
+                    <div class="icon"><i class="fas fa-star"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 俄罗斯方块游戏卡片 -->
+        <div class="game-card">
+            <div class="game-thumbnail" style="background: linear-gradient(45deg, #a1c4fd, #c2e9fb);">
+                <div class="game-title">俄罗斯方块</div>
+            </div>
+            <div class="game-info">
+                <p class="game-description">永恒经典的俄罗斯方块！堆叠不同形状的方块，消除整行来获得高分，挑战你的反应速度和决策能力。</p>
+                <a href="tetris.html" class="play-btn">开始游戏</a>
+                
+                <div class="game-meta">
+                    <span>技巧 · 休闲</span>
+                    <span><i class="fas fa-user"></i> 单人游戏</span>
+                </div>
+                
+                <div class="game-icons">
+                    <div class="icon"><i class="fas fa-shapes"></i></div>
+                    <div class="icon"><i class="fas fa-chess-board"></i></div>
+                    <div class="icon"><i class="fas fa-stopwatch"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 记忆翻牌游戏卡片 -->
+        <div class="game-card">
+            <div class="game-thumbnail" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);">
+                <div class="game-title">记忆翻牌</div>
+                <div class="coming-soon">即将推出</div>
+            </div>
+            <div class="game-info">
+                <p class="game-description">测试你的记忆能力！翻开卡片找到匹配的图案。随着等级提升，难度会不断增加，挑战你的视觉记忆极限。</p>
+                <a href="#" class="play-btn">敬请期待</a>
+                
+                <div class="game-meta">
+                    <span>记忆 · 益智</span>
+                    <span><i class="fas fa-users"></i> 多人游戏</span>
+                </div>
+                
+                <div class="game-icons">
+                    <div class="icon"><i class="fas fa-memory"></i></div>
+                    <div class="icon"><i class="fas fa-clone"></i></div>
+                    <div class="icon"><i class="fas fa-layer-group"></i></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <footer>
+        <p>© 2025 abydym游戏中心 - 提供最精彩的在线游戏体验</p>
+        <div class="extensible-note">
+            后续扩展说明：<br>
+            1. 若要添加新游戏，只需在games-container中复制一个.game-card元素结构<br>
+            2. 更新游戏名称、描述、链接(HTML文件名)和视觉元素<br>
+            3. 若游戏未完成，可添加<span class="coming-soon">即将推出</span>元素<br>
+            4. 添加新游戏页面只需按链接创建对应HTML文件<br>
+            5. 所有游戏卡片都会自动适配布局
+        </div>
+    </footer>
+    
+    <script>
+        // 添加交互效果
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', (e) => {
+                if(!e.target.classList.contains('play-btn')) {
+                    const btn = card.querySelector('.play-btn');
+                    btn.style.transform = 'scale(0.95)';
+                    setTimeout(() => {
+                        btn.style.transform = '';
+                    }, 200);
+                }
+            });
+        });
+        
+        // 开发者模式显示扩展说明 (按Alt+D)
+        let keysPressed = {};
+        document.addEventListener('keydown', (event) => {
+            keysPressed[event.key] = true;
+            
+            if (keysPressed['Alt'] && keysPressed['d']) {
+                document.querySelector('.extensible-note').style.display = 'block';
+            }
+        });
+        
+        document.addEventListener('keyup', (event) => {
+            keysPressed[event.key] = false;
+        });
+    </script>
+</body>
+</html>
