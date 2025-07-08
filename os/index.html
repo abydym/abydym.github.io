@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>操作系统算法演示平台</title>
+	<style>
+        :root {
+            --primary: #0066ff;
+            --secondary: #00c3ff;
+            --background: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --highlight: #00ffcc;
+            --border-glow: rgba(0, 99, 255, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            background-image:
+                    radial-gradient(circle at 15% 20%, rgba(0, 99, 255, 0.15) 0%, transparent 28%),
+                    radial-gradient(circle at 85% 30%, rgba(0, 195, 255, 0.15) 0%, transparent 28%);
+            overflow-x: hidden;
+        }
+
+        header {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--primary);
+            box-shadow: 0 0 20px rgba(0, 102, 255, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            background: linear-gradient(to right, var(--primary), var(--highlight));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 800;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px rgba(0, 195, 255, 0.2);
+        }
+
+        .tagline {
+            color: var(--highlight);
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.3);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+
+        .algorithm-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .algorithm-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+        }
+
+        .algorithm-card:hover {
+            transform: translateY(-5px);
+            box-shadow:
+                    0 10px 25px rgba(0, 99, 255, 0.3),
+                    0 0 0 1px var(--primary);
+        }
+
+        .card-icon {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(to bottom right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 0 0 20px rgba(0, 102, 255, 0.4);
+        }
+
+        .card-title {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--highlight);
+        }
+
+        .card-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #cbd5e1;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 2rem;
+            background: transparent;
+            color: var(--highlight);
+            border: 2px solid var(--primary);
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn:hover {
+            color: var(--background);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            z-index: -1;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .btn:hover::before {
+            transform: scaleX(1);
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+            color: #94a3b8;
+            font-size: 0.9rem;
+            border-top: 1px solid rgba(100, 116, 139, 0.3);
+        }
+
+        .glowing-text {
+            text-shadow: 0 0 10px var(--highlight), 0 0 20px var(--highlight);
+            animation: glow 1.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px var(--primary), 0 0 10px var(--primary);
+            }
+            to {
+                text-shadow: 0 0 10px var(--secondary), 0 0 20px var(--secondary), 0 0 30px var(--highlight);
+            }
+        }
+
+        .cyber-border {
+            position: relative;
+        }
+
+        .cyber-border::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 2px;
+            background: var(--highlight);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 195, 255, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 195, 255, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 195, 255, 0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tagline {
+                font-size: 1rem;
+            }
+        }
+	</style>
+</head>
+<body>
+<header>
+	<div class="container">
+		<div class="header-content">
+			<div>
+				<h1>操作系统算法<span class="glowing-text">演示平台</span></h1>
+				<p class="tagline">探索、理解、实践核心操作系统算法</p>
+			</div>
+		</div>
+	</div>
+</header>
+
+<div class="container">
+	<div class="main-content">
+		<!-- 银行家算法 -->
+		<div class="algorithm-card pulse">
+			<div class="card-icon">🔒</div>
+			<h3 class="card-title cyber-border">银行家算法</h3>
+			<p class="card-desc">用于避免死锁的经典算法，通过模拟资源分配确保系统处于安全状态。演示内容包括资源请求、安全性检查等过程。</p>
+			<a href="banker.html" class="btn">开始演示</a>
+		</div>
+		
+		<!-- 动态分区分配 -->
+		<div class="algorithm-card">
+			<div class="card-icon">📊</div>
+			<h3 class="card-title cyber-border">动态分区分配</h3>
+			<p class="card-desc">演示首次适应(FF)、最佳适应(BF)、最坏适应(WF)等算法在内存分配中的表现和碎片问题。</p>
+			<a href="dynamic_partition.html" class="btn">开始演示</a>
+		</div>
+		
+		<!-- 进程调度算法 -->
+		<div class="algorithm-card">
+			<div class="card-icon">⏱️</div>
+			<h3 class="card-title cyber-border">进程调度算法</h3>
+			<p class="card-desc">展示多种CPU调度算法：FCFS、SJF、优先级、RR等，通过图形化方式比较周转时间和等待时间。</p>
+			<a href="scheduling.html" class="btn">开始演示</a>
+		</div>
+		
+		<!-- 页面置换算法 -->
+		<div class="algorithm-card">
+			<div class="card-icon">🔄</div>
+			<h3 class="card-title cyber-border">页面置换算法</h3>
+			<p class="card-desc">演示FIFO、OPT、LRU、LFU等页面置换算法，展示不同算法的缺页次数和缺页率。</p>
+			<a href="page_replacement.html" class="btn">开始演示</a>
+		</div>
+		
+		<!-- 磁盘调度算法 -->
+		<div class="algorithm-card">
+			<div class="card-icon">💽</div>
+			<h3 class="card-title cyber-border">磁盘调度算法</h3>
+			<p class="card-desc">包括FCFS、SSTF、SCAN、C-SCAN等磁盘调度算法演示，展示磁头移动距离和寻道时间。</p>
+			<a href="disk_scheduling.html" class="btn">开始演示</a>
+		</div>
+		
+		<!-- 扩展 -->
+		<div class="algorithm-card">
+			<div class="card-icon">✨</div>
+			<h3 class="card-title cyber-border">更多算法</h3>
+			<p class="card-desc">持续更新添加更多操作系统相关算法，包括文件系统、死锁检测、IPC等更多演示内容。</p>
+			<a href="#" class="btn">敬请期待</a>
+		</div>
+	</div>
+</div>
+
+<footer class="footer">
+	<div class="container">
+		<p>© 2025 操作系统算法演示平台 abydym | 探索计算机操作系统核心原理</p>
+		<p style="margin-top: 0.5rem;">本平台仅用于教学目的 | 所有算法解释归abydym所有</p>
+	</div>
+</footer>
+
+<script>
+	// 添加悬停效果增强
+	document.querySelectorAll('.algorithm-card').forEach(card => {
+		card.addEventListener('mouseenter', () => {
+			card.classList.add('pulse');
+		});
+		
+		card.addEventListener('mouseleave', () => {
+			card.classList.remove('pulse');
+		});
+	});
+</script>
+</body>
+</html>
