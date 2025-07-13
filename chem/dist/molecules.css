@@ -1,0 +1,151 @@
+.link {
+    stroke: #A0B4C8;
+    stroke-width: 2.5px;
+    opacity: 0.85;
+    transition: stroke 0.2s;
+}
+
+.link line {
+  stroke: #696969;
+}
+
+.link line.separator {
+  stroke: #FFF;
+  stroke-width: 2.5px;
+}
+
+.node circle {
+  stroke: #222;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 2px 8px rgba(83,178,200,0.10));
+  transition: filter 0.2s, stroke 0.2s;
+}
+
+.node circle:hover {
+  filter: drop-shadow(0 4px 16px rgba(83,178,200,0.25));
+  stroke: #53B2C8;
+  stroke-width: 3.5px;
+}
+
+.atom-H {
+    fill: #F5F5F5;
+    stroke: #B4B4B4;
+    stroke-width: 2px;
+}
+
+.atom-He {
+    fill: #6EC6FF;
+    stroke: #3295D5;
+    stroke-width: 1.5px;
+}
+
+.atom-B {
+    fill: #F3E5AB;
+    stroke: #BCAB5E;
+    stroke-width: 1.5px;
+}
+
+.atom-C {
+    fill: #444;
+    stroke: #222;
+    stroke-width: 1.5px;
+}
+
+.atom-N {
+    fill: #5C7CFA;
+    stroke: #3444C5;
+    stroke-width: 1.5px;
+}
+
+.atom-O {
+    fill: #FF6B6B;
+    stroke: #C12D36;
+    stroke-width: 1.5px;
+}
+
+.atom-F {
+    fill: #B197FC;
+    stroke: #9D42D0;
+    stroke-width: 1.5px;
+}
+
+.atom-Na {
+    fill: #D0B3FF;
+    stroke: #A66CE0;
+    stroke-width: 1.5px;
+}
+
+.atom-Si {
+    fill: #BDBDBD;
+    stroke: #7C7C7C;
+    stroke-width: 1.5px;
+}
+
+.atom-P {
+    fill: #63E6BE;
+    stroke: #009D6D;
+    stroke-width: 1.5px;
+}
+
+.atom-S {
+    fill: #FFF3BF;
+    stroke: #F3D379;
+    stroke-width: 1.5px;
+}
+
+.atom-Cl {
+    fill: #8CE99A;
+    stroke: #00A200;
+    stroke-width: 1.5px;
+}
+
+.atom-As {
+    fill: #BFA76A;
+    stroke: #726437;
+    stroke-width: 1.5px;
+}
+
+.atom-Se {
+    fill: #FF8787;
+    stroke: #A2030C;
+    stroke-width: 1.5px;
+}
+
+.atom-Br {
+    fill: #FFD6A5;
+    stroke: #DB8226;
+    stroke-width: 1.5px;
+}
+
+.atom-I {
+    fill: #A5D8FF;
+    stroke: #274496;
+    stroke-width: 1.5px;
+}
+
+/* --- tooltip 美化 --- */
+.tooltip, div.tooltip {
+    background: #fff;
+    color: #222;
+    border: 1.5px solid #53B2C8;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(83,178,200,0.10);
+    font-size: 15px;
+    font-weight: 500;
+    padding: 6px 12px;
+    opacity: 0.95;
+    transition: box-shadow 0.2s;
+}
+
+.tooltip:hover, div.tooltip:hover {
+    box-shadow: 0 4px 16px rgba(83,178,200,0.18);
+}
+
+/* --- 响应式 SVG 容器 --- */
+.svg-container, .svg-container-responsive {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(83,178,200,0.08);
+    margin: 0 auto;
+    padding: 0;
+}
