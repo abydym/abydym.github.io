@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>推箱子 (Sokoban)</title>
+    <link rel="stylesheet" href="css/styletxz.css">
+</head>
+<body>
+
+    <div class="game-container">
+        <main id="game-area">
+            <div id="game-board"></div>
+        </main>
+
+        <aside class="controls-panel">
+            <h1>推箱子</h1>
+            <div class="info-grid">
+                <div class="info-box">
+                    <h3>关卡</h3>
+                    <p id="level-display">1</p>
+                </div>
+                <div class="info-box">
+                    <h3>步数</h3>
+                    <p id="moves-display">0</p>
+                </div>
+                 <div class="info-box">
+                    <h3>推动</h3>
+                    <p id="pushes-display">0</p>
+                </div>
+            </div>
+
+            <div class="virtual-controls">
+                <button id="btn-up" class="control-btn">▲</button>
+                <button id="btn-left" class="control-btn">◀</button>
+                <button id="btn-down" class="control-btn">▼</button>
+                <button id="btn-right" class="control-btn">▶</button>
+            </div>
+            
+            <div class="action-buttons">
+                <button id="restart-button">重玩本关</button>
+                 <div class="level-selector">
+                    <button id="prev-level-button">上一关</button>
+                    <button id="next-level-button">下一关</button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="level-complete-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <h2>恭喜！</h2>
+            <p>你已完成第 <span id="completed-level">1</span> 关！</p>
+            <button id="next-level-modal-button">下一关</button>
+        </div>
+    </div>
+
+    <script src="js/maintxz.js"></script>
+</body>
+</html>
