@@ -11,6 +11,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOverScreen = document.getElementById('game-over-screen');
     const finalScoreElement = document.getElementById('final-score');
     const restartButton = document.getElementById('restart-button');
+    
+    // 虚拟按键元素
+    const toggleControlsButton = document.getElementById('toggle-controls-button');
+    const virtualControls = document.getElementById('virtual-controls');
+    const leftBtn = document.getElementById('left-btn');
+    const rightBtn = document.getElementById('right-btn');
+    const downBtn = document.getElementById('down-btn');
+    const rotateBtn = document.getElementById('rotate-btn');
+    const pauseBtn = document.getElementById('pause-btn');
+    
+    let isVirtualControlsVisible = false;
 
     // --- 音效获取 ---
     const moveSound = document.getElementById('move-sound');
@@ -389,6 +400,32 @@ document.addEventListener('DOMContentLoaded', () => {
     startButton.addEventListener('click', startGame);
     restartButton.addEventListener('click', startGame);
     resumeButton.addEventListener('click', resumeGame);
+
+    // 虚拟按键事件监听
+    toggleControlsButton.addEventListener('click', () => {
+        isVirtualControlsVisible = !isVirtualControlsVisible;
+        if (isVirtualControlsVisible) {
+            virtualControls.style.display = 'block';
+            toggleControlsButton.textContent = '隐藏虚拟按键';
+        } else {
+            virtualControls.style.display = 'none';
+            toggleControlsButton.textContent = '显示虚拟按键';
+        }
+    });
+
+    // 虚拟按键控制事件
+    leftBtn.addEventListener('click', () => move(-1));
+    rightBtn.addEventListener('click', () => move(1));
+    downBtn.addEventListener('click', drop);
+    rotateBtn.addEventListener('click', rotate);
+    pauseBtn.addEventListener('click', togglePause);
+
+    // 添加触摸事件支持，防止在移动设备上双击
+    leftBtn.addEventListener('touchstart', (e) => { e.preventDefault(); move(-1); });
+    rightBtn.addEventListener('touchstart', (e) => { e.preventDefault(); move(1); });
+    downBtn.addEventListener('touchstart', (e) => { e.preventDefault(); drop(); });
+    rotateBtn.addEventListener('touchstart', (e) => { e.preventDefault(); rotate(); });
+    pauseBtn.addEventListener('touchstart', (e) => { e.preventDefault(); togglePause(); });
 
     // --- 初始设置 ---
     createNextPieceGrid();

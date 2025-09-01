@@ -28,9 +28,25 @@
                 <p id="level">1</p>
             </div>
             <button id="start-button">开始游戏</button>
+            <button id="toggle-controls-button">显示虚拟按键</button>
         </aside>
     </div>
-
+    
+    <!-- 虚拟控制按钮区域 -->
+    <div id="virtual-controls" class="virtual-controls" style="display: none;">
+        <div class="controls-row">
+            <button id="rotate-btn" class="virtual-btn rotate-btn">↻</button>
+        </div>
+        <div class="controls-row">
+            <button id="left-btn" class="virtual-btn direction-btn">←</button>
+            <button id="down-btn" class="virtual-btn direction-btn">↓</button>
+            <button id="right-btn" class="virtual-btn direction-btn">→</button>
+        </div>
+        <div class="controls-row">
+            <button id="pause-btn" class="virtual-btn pause-btn">⏸</button>
+        </div>
+    </div>
+    
     <div id="pause-screen" class="overlay" style="display: none;">
         <div class="overlay-content">
             <h1>已暂停</h1>
