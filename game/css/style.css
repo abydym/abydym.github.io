@@ -1,0 +1,226 @@
+/* --- 全局样式和变量 --- */
+:root {
+    --bg-color: #1a1a2e;
+    --primary-color: #e94560;
+    --secondary-color: #16213e;
+    --font-color: #f0f0f0;
+    --grid-bg-color: #0f3460;
+    --grid-line-color: rgba(255, 255, 255, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background-color: var(--bg-color);
+    color: var(--font-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* --- 游戏主容器 --- */
+#game-container {
+    display: flex;
+    flex-wrap: wrap; /* 允许在小屏幕上换行 */
+    justify-content: center;
+    gap: 20px;
+}
+
+/* --- 游戏区域 --- */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: repeat(20, 1fr);
+    width: 300px; /* 基础宽度 */
+    height: 600px; /* 基础高度 */
+    background-color: var(--grid-bg-color);
+    border: 5px solid var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0 0 20px var(--primary-color);
+    /* 使用 background-image 创建网格线 */
+    background-image: 
+        linear-gradient(to right, var(--grid-line-color) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--grid-line-color) 1px, transparent 1px);
+    background-size: 30px 30px; /* 每个格子的大小 */
+}
+
+/* 方块单元格的样式 (将由 JS 添加) */
+.cell {
+    /* 这个类是预留的，但我们直接给下面的方块类型上色 */
+}
+
+/* 不同俄罗斯方块的颜色 */
+.T { background-color: #AE4FDC; }
+.O { background-color: #F8D347; }
+.L { background-color: #F29E4C; }
+.J { background-color: #4B7CFD; }
+.I { background-color: #55DDE0; }
+.S { background-color: #52D681; }
+.Z { background-color: #F76F8E; }
+
+/* --- 侧边栏 --- */
+#side-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 200px;
+    padding: 20px;
+    background-color: var(--secondary-color);
+    border-radius: 10px;
+}
+
+.panel-section {
+    background-color: var(--bg-color);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.panel-section h2 {
+    font-size: 1.2em;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+}
+
+.panel-section p {
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+/* --- 下一个方块预览 --- */
+#next-piece {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(4, 1fr);
+    width: 80px;
+    height: 80px;
+    margin: 0 auto;
+    background-color: var(--grid-bg-color);
+}
+
+/* --- 按钮样式 --- */
+button {
+    background-color: var(--primary-color);
+    color: var(--font-color);
+    border: none;
+    padding: 15px;
+    font-size: 1em;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.1s ease;
+}
+
+button:hover {
+    background-color: #d63c54;
+}
+
+button:active {
+    transform: scale(0.95);
+}
+
+/* --- 覆盖层样式 (暂停/游戏结束) --- */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+}
+
+.overlay-content {
+    background-color: var(--secondary-color);
+    padding: 40px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(233, 69, 96, 0.7);
+}
+
+.overlay-content h1 {
+    font-size: 2.5em;
+    color: var(--primary-color);
+    margin-bottom: 20px;
+}
+
+.overlay-content p {
+    font-size: 1.5em;
+    margin-bottom: 30px;
+}
+
+/* --- 响应式设计 --- */
+
+/* 平板电脑 */
+@media (max-width: 768px) {
+    body {
+        padding: 10px;
+        align-items: flex-start; /* 从顶部开始对齐 */
+    }
+
+    #game-container {
+        flex-direction: column; /* 垂直排列 */
+        align-items: center;
+        gap: 15px;
+    }
+
+    #game-board {
+        /* 使用 vmin 单位让棋盘大小与屏幕较小的一边关联 */
+        width: 45vmin;
+        height: 90vmin;
+        background-size: 4.5vmin 4.5vmin;
+        order: 1; /* 游戏区域在第一位 */
+    }
+
+    #side-panel {
+        width: 45vmin;
+        order: 2; /* 侧边栏在第二位 */
+        flex-direction: row; /* 水平排列侧边栏内容 */
+        flex-wrap: wrap; /* 允许换行 */
+        justify-content: space-around;
+        padding: 10px;
+    }
+    
+    .panel-section {
+        flex-grow: 1;
+        min-width: 120px; /* 保证每个区域的最小宽度 */
+    }
+
+    #side-panel button {
+        width: 100%;
+    }
+}
+
+/* 手机 */
+@media (max-width: 480px) {
+    #game-board {
+        width: 80vmin;
+        height: 160vmin; /* 注意: 在非常窄的屏幕上, 这会超出屏幕高度 */
+        max-height: 70vh; /* 限制最大高度为视窗的70% */
+        width: 35vh; /* 基于高度重新计算宽度 (2:1比例) */
+        background-size: 3.5vh 3.5vh;
+    }
+    
+    #side-panel {
+        width: 80vmin;
+        max-width: 35vh; /* 与游戏区域宽度保持一致 */
+    }
+
+    .overlay-content h1 {
+        font-size: 2em;
+    }
+
+    .overlay-content p {
+        font-size: 1.2em;
+    }
+}
