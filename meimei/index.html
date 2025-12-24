@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>泰勒·斯威夫特与乡村音乐的结缘 - 课程汇报</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 React 和 Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- 引入 Lucide 图标库 -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- 配置 Tailwind -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Helvetica Neue', 'Arial', 'sans-serif'],
+                        serif: ['Georgia', 'serif'],
+                    },
+                    colors: {
+                        'cream': '#fdfbf7',
+                        'sage': '#a4c3b2',
+                        'dusty-pink': '#e5b3bb',
+                        'soft-gold': '#e6c229',
+                    },
+                    animation: {
+                        'blob': 'blob 10s infinite',
+                        'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
+                        'slow-zoom': 'slow-zoom 20s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        'fade-in-up': {
+                            '0%': { opacity: '0', transform: 'translateY(30px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        'slow-zoom': {
+                            '0%': { transform: 'scale(1.1)' },
+                            '100%': { transform: 'scale(1.0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #fdfbf7; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #e5b3bb; }
+        
+        /* 玻璃拟态卡片 - 浅色版 */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.8); 
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.07);
+        }
+        
+        /* 文字阴影，增强在浅色背景上的可读性 */
+        .text-shadow-sm { text-shadow: 0 1px 2px rgba(0,0,0,0.1); }
+        .text-shadow-lg { text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+    </style>
+</head>
+<body class="bg-cream text-stone-800">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // 代表作数据：增加 link 属性
+        const songsData = [
+            { 
+                id: 1, 
+                name: "Our Song", 
+                title_cn: "班卓琴的叙事", 
+                year: "Debut Era", 
+                color: "from-teal-100 to-green-100", // 浅色渐变
+                iconColor: "text-teal-600",
+                image: "pic/our_song.jpg", 
+                link: "music/OurSong.mp3", // 超链接目标
+                desc: "完全契合乡村音乐“生活化叙事”的内核。",
+                analysis: "用班卓琴开篇，歌词讲述高中生用传呼机传情的青涩故事，拿下美国公告牌乡村单曲榜冠军。"
+            },
+            { 
+                id: 2, 
+                name: "Love Story", 
+                title_cn: "罗密欧与朱丽叶", 
+                year: "Fearless Era", 
+                color: "from-yellow-100 to-amber-100", 
+                iconColor: "text-amber-600",
+                image: "pic/love_story.jpg", 
+                link: "music/LoveStory.mp3",
+                desc: "将悲剧改为圆满结局的经典改编。",
+                analysis: "改编莎士比亚经典，原声吉他+小提琴编曲贯穿始终。歌词里“爸爸说离朱丽叶远点”充满了浓郁的小镇生活气息。"
+            },
+            { 
+                id: 3, 
+                name: "Teardrops on My Guitar", 
+                title_cn: "吉他上的泪痕", 
+                year: "Debut Era", 
+                color: "from-cyan-100 to-blue-100", 
+                iconColor: "text-blue-600",
+                image: "pic/teardrops.jpg", 
+                link: "music/Teardrops.mp3",
+                desc: "乡村音乐特有的细腻婉转。",
+                analysis: "以校园暗恋为主题，吉他伴奏简洁，副歌部分的唱腔展示了乡村音乐情感表达的细腻与真挚。"
+            }
+        ];
+
+        const App = () => {
+            const [activeSong, setActiveSong] = useState(null);
+            const [scrollY, setScrollY] = useState(0);
+
+            useEffect(() => {
+                const handleScroll = () => setScrollY(window.scrollY);
+                window.addEventListener("scroll", handleScroll);
+                lucide.createIcons();
+                return () => window.removeEventListener("scroll", handleScroll);
+            }, []);
+
+            return (
+                <div className="min-h-screen font-sans overflow-x-hidden selection:bg-dusty-pink selection:text-white">
+                    
+                    {/* 导航栏 - 浅色磨砂效果 */}
+                    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${scrollY > 50 ? 'bg-white/80 backdrop-blur-md border-b border-stone-200 py-4 shadow-sm' : 'bg-transparent py-6'}`}>
+                        <div className="container mx-auto px-6 flex justify-between items-center">
+                            <div className="text-xl font-bold tracking-tighter">
+                                <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-500 to-amber-500">
+                                    《中西方流行音乐》
+                                </span>
+                            </div>
+                            <div className="hidden md:flex space-x-8 text-sm font-bold tracking-widest uppercase text-stone-600">
+                                {['出道契机', '代表作品', '主要成就'].map((item, index) => (
+                                    <a key={index} href={`#section-${index + 1}`} className="hover:text-amber-500 transition-colors relative group">
+                                        {item}
+                                        <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-amber-400 transition-all group-hover:w-full"></span>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </nav>
+
+                    {/* Header: 汇报主题 (使用 pic/meimei.jpg) */}
+                    <header className="relative z-10 h-screen flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <img 
+                                src="pic/bg1.jpg" 
+                                alt="Cover" 
+                                className="w-full h-full object-cover animate-slow-zoom"
+                                onError={(e) => { e.target.style.opacity = '1'; e.target.src = "https://images.unsplash.com/photo-1493225255756-d9584f8606e9?q=80&w=2070"; }}
+                            />
+                            {/* 浅色遮罩：为了让黑色/深色文字能看清，这里使用白色渐变遮罩 */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-cream via-white/30 to-white/10"></div>
+                        </div>
+                        
+                        <div className="relative z-10 text-center px-4 max-w-4xl animate-fade-in-up">
+                            <div className="inline-block px-5 py-2 border border-stone-400/30 rounded-full bg-white/40 backdrop-blur-md mb-6 shadow-sm">
+                                <span className="text-stone-700 font-bold tracking-widest text-xs uppercase">Part II: Taylor Swift & Country Music</span>
+                            </div>
+                            <h1 className="text-5xl md:text-7xl font-black mb-6 leading-tight text-stone-800 drop-shadow-sm">
+                                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-stone-700 to-amber-600">
+                                    泰勒·斯威夫特
+                                </span>
+                                <span className="block text-4xl md:text-6xl mt-4 font-serif italic text-stone-600 font-normal">
+                                    与乡村音乐的结缘
+                                </span>
+                            </h1>
+                            <p className="text-stone-700 text-lg md:text-xl max-w-2xl mx-auto leading-relaxed font-medium">
+                                从宾夕法尼亚的农场到纳什维尔的聚光灯下，探索这位超级巨星如何用乡村音乐定义的真诚改写流行文化。
+                            </p>
+                            <div className="mt-12 animate-bounce">
+                                <i data-lucide="chevron-down" className="w-8 h-8 mx-auto text-stone-400"></i>
+                            </div>
+                        </div>
+                    </header>
+
+                    {/* Section 1: 出道契机 (使用 pic/bg1.jpg) */}
+                    <section id="section-1" className="relative z-10 py-32 bg-fixed bg-center bg-cover border-t border-stone-200"
+                        style={{ backgroundImage: "url('pic/bg1.jpg')" }}
+                    >
+                        {/* 浅白色叠加层，确保文字可读 */}
+                        <div className="absolute inset-0 bg-white/90"></div>
+
+                        <div className="container mx-auto px-6 max-w-6xl relative z-10">
+                            <div className="flex items-center gap-4 mb-16">
+                                <span className="text-6xl font-black text-stone-200">01</span>
+                                <div>
+                                    <h2 className="text-3xl md:text-5xl font-bold text-stone-800">出道契机</h2>
+                                    <p className="text-stone-500 mt-2 font-serif italic">The Beginning of Everything</p>
+                                </div>
+                            </div>
+
+                            <div className="grid md:grid-cols-2 gap-12">
+                                {/* Card 1: 童年 */}
+                                <div className="glass-card p-10 rounded-3xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group">
+                                    <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mb-6 text-green-600 group-hover:bg-green-500 group-hover:text-white transition-colors">
+                                        <i data-lucide="home" className="w-7 h-7"></i>
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-4 text-stone-800">童年背景与启蒙</h3>
+                                    <div className="space-y-4 text-stone-600 leading-relaxed">
+                                        <p>
+                                            <strong className="text-stone-800">宾夕法尼亚的农场岁月：</strong> 
+                                            出生于美国宾夕法尼亚州的一个小镇，早期的圣诞树农场生活为她日后的创作提供了大量充满泥土气息的真实素材。
+                                        </p>
+                                        <p>
+                                            <strong className="text-stone-800">初次受挫：</strong> 
+                                            11岁时，她怀揣着自制的Demo带只身前往唱片公司毛遂自荐，却因“乡村音乐需要真实的生活体验”而被拒绝。这次经历让她明白，通过地缘接近音乐中心是关键。随后，全家毅然搬往<span className="text-amber-600 font-bold bg-amber-50 px-1">乡村音乐之都——纳什维尔</span>。
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Card 2: 签约 */}
+                                <div className="glass-card p-10 rounded-3xl hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group">
+                                    <div className="w-14 h-14 bg-teal-100 rounded-full flex items-center justify-center mb-6 text-teal-600 group-hover:bg-teal-500 group-hover:text-white transition-colors">
+                                        <i data-lucide="pen-tool" className="w-7 h-7"></i>
+                                    </div>
+                                    <h3 className="text-2xl font-bold mb-4 text-stone-800">职业生涯的起点</h3>
+                                    <div className="space-y-4 text-stone-600 leading-relaxed">
+                                        <p>
+                                            <strong className="text-stone-800">天才词曲作者：</strong> 
+                                            14岁那年，她凭借过人的创作才华签约索尼/联合电视音乐出版公司（Sony/ATV），成为该公司历史上<span className="text-teal-600 font-bold bg-teal-50 px-1">最年轻的签约词曲作者</span>。
+                                        </p>
+                                        <p>
+                                            <strong className="text-stone-800">同名专辑问世：</strong> 
+                                            16岁时，她发行了首张同名专辑《Taylor Swift》，正式以乡村歌手身份出道，开启了属于她的时代。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Section 2: 代表作 (使用 pic/bg2.jpg) */}
+                    <section id="section-2" className="relative z-10 py-32 bg-fixed bg-center bg-cover"
+                        style={{ backgroundImage: "url('pic/bg2.jpg')" }}
+                    >
+                         {/* 浅色叠加层 */}
+                         <div className="absolute inset-0 bg-white/80 backdrop-blur-[2px]"></div>
+
+                        <div className="container mx-auto px-6 relative z-10">
+                            <div className="flex items-center gap-4 mb-16 justify-center text-center">
+                                <div>
+                                    <h2 className="text-4xl md:text-6xl font-black text-stone-800 drop-shadow-sm">
+                                        乡村时期代表作
+                                    </h2>
+                                    <p className="text-stone-600 mt-4 max-w-2xl mx-auto font-serif italic text-lg">
+                                        点击卡片播放音频 · 用吉他和叙事构建的音乐世界
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 h-[600px] md:h-[500px]">
+                                {songsData.map((song) => (
+                                    <a 
+                                        key={song.id}
+                                        href={song.link} // 设置链接
+                                        target="_blank"  // 新标签页打开
+                                        onMouseEnter={() => setActiveSong(song.id)}
+                                        onMouseLeave={() => setActiveSong(null)}
+                                        className={`group relative rounded-3xl overflow-hidden cursor-pointer transition-all duration-500 ease-out shadow-lg hover:shadow-2xl border border-white/60
+                                        ${activeSong === song.id ? 'md:col-span-1 md:w-[120%] z-20 scale-[1.02]' : 'md:col-span-1 opacity-90 hover:opacity-100'}`}
+                                        style={{ flex: activeSong === song.id ? 2 : 1 }}
+                                    >
+                                        {/* 卡片背景图 - 默认 meimei.jpg，实际应用中可以给每个歌曲配不同的图 */}
+                                        <img 
+                                            src={song.image} 
+                                            alt={song.name} 
+                                            className="absolute inset-0 w-full h-full object-cover transition-all duration-700 transform group-hover:scale-110"
+                                            onError={(e) => { e.target.src = `pic/meimei.jpg`; }}
+                                        />
+                                        
+                                        {/* 渐变遮罩 - 浅色风格使用白色向上渐变 */}
+                                        <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 via-stone-900/20 to-transparent"></div>
+
+                                        {/* 点击提示 */}
+                                        <div className="absolute top-4 right-4 bg-white/20 backdrop-blur-md p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <i data-lucide="play-circle" className="w-8 h-8 text-white"></i>
+                                        </div>
+
+                                        {/* 内容区 */}
+                                        <div className="absolute bottom-0 left-0 p-8 w-full text-white">
+                                            <div className="flex items-center gap-2 mb-3">
+                                                <i data-lucide="music" className="w-4 h-4 text-amber-300"></i>
+                                                <span className="text-xs font-bold uppercase tracking-widest text-amber-200">{song.year}</span>
+                                            </div>
+                                            
+                                            <h3 className="text-3xl font-black mb-1 italic tracking-wide">{song.name}</h3>
+                                            <p className="text-sm font-bold text-white/90 mb-4">{song.title_cn}</p>
+                                            
+                                            <div className={`overflow-hidden transition-all duration-500 ${activeSong === song.id ? 'max-h-60 opacity-100' : 'max-h-0 opacity-0 md:group-hover:max-h-60 md:group-hover:opacity-100'}`}>
+                                                <p className="text-sm text-stone-200 leading-relaxed border-l-2 border-amber-400 pl-4 bg-black/10 backdrop-blur-sm p-2 rounded-r-lg">
+                                                    {song.analysis}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </a>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Section 3: 成就 (使用 pic/bg3.jpg) */}
+                    <section id="section-3" className="relative z-10 py-32 bg-fixed bg-center bg-cover"
+                        style={{ backgroundImage: "url('pic/bg3.jpg')" }}
+                    >
+                        {/* 浅色叠加层 */}
+                        <div className="absolute inset-0 bg-cream/90"></div>
+
+                        <div className="container mx-auto px-6 max-w-5xl relative z-10">
+                            <div className="flex flex-col md:flex-row gap-16 items-start">
+                                <div className="md:w-1/3 sticky top-32">
+                                    <span className="text-6xl font-black text-stone-200 block mb-4">03</span>
+                                    <h2 className="text-4xl font-bold text-stone-800 mb-6 leading-tight">
+                                        成就与<br/><span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">深远影响</span>
+                                    </h2>
+                                    <p className="text-stone-600 leading-relaxed text-lg">
+                                        她不仅收获了奖杯，更重要的是她改变了人们对乡村音乐的刻板印象，将其推向了更年轻的受众。
+                                    </p>
+                                    <div className="mt-8 p-6 bg-white rounded-2xl border border-stone-200 shadow-xl">
+                                        <i data-lucide="trophy" className="w-10 h-10 text-amber-500 mb-3"></i>
+                                        <div className="text-2xl font-bold text-stone-800">Grammy Awards</div>
+                                        <div className="text-sm text-stone-500 font-medium mt-1">Youngest Album of the Year Winner (at the time)</div>
+                                    </div>
+                                </div>
+
+                                <div className="md:w-2/3 space-y-8">
+                                    {/* Item 1 */}
+                                    <div className="group glass-card p-10 rounded-3xl hover:border-amber-400/50 transition-all hover:-translate-y-2">
+                                        <h3 className="text-2xl font-bold text-stone-800 mb-4 flex items-center gap-3">
+                                            <div className="p-2 bg-amber-100 rounded-lg text-amber-600">
+                                                <i data-lucide="award" className="w-6 h-6"></i>
+                                            </div>
+                                            权威奖项认可
+                                        </h3>
+                                        <p className="text-stone-600 leading-relaxed text-lg">
+                                            首张专辑即获得全美音乐奖<strong>“最受欢迎乡村专辑”</strong>。随后，《Fearless》不仅让她成为格莱美历史上<strong>最年轻的年度专辑获得者</strong>，还一举包揽了“最佳乡村专辑”和“最佳乡村歌曲”，确立了她在该领域的统治地位。
+                                        </p>
+                                    </div>
+
+                                    {/* Item 2 */}
+                                    <div className="group glass-card p-10 rounded-3xl hover:border-pink-400/50 transition-all hover:-translate-y-2">
+                                        <h3 className="text-2xl font-bold text-stone-800 mb-4 flex items-center gap-3">
+                                            <div className="p-2 bg-pink-100 rounded-lg text-pink-600">
+                                                <i data-lucide="users" className="w-6 h-6"></i>
+                                            </div>
+                                            文化影响力
+                                        </h3>
+                                        <p className="text-stone-600 leading-relaxed text-lg">
+                                            她最大的贡献在于<strong>打破了“乡村音乐是中老年专属”的刻板印象</strong>。通过将流行元素与乡村叙事结合，她成功让全球数以百万计的青少年群体开始关注并爱上乡村音乐，为这一传统流派注入了前所未有的青春活力。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* Footer */}
+                    <footer className="bg-white py-12 border-t border-stone-200">
+                        <div className="container mx-auto px-6 text-center text-stone-400 text-sm">
+                            <p className="mb-2 font-bold tracking-widest uppercase text-stone-300">《中西方流行音乐》</p>
+                            <p>&copy; By Zhou Yuwei · 仅用于《中西方流行音乐》课堂展示.</p>
+                        </div>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
